@@ -1,0 +1,50 @@
+﻿@model IEnumerable<jnu_actroom.Models.CatalogModel>
+@{
+    ViewBag.Title = "Home Page";
+}
+@section featured {
+
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title.</h1>
+                <h2>@ViewBag.Message</h2>
+            </hgroup>
+            <p>
+                在这里，你可以了解了更多关于课后的只是，想了解更多关于本网站的信息吗，这点击<a href="home/about" title="关于我们">这里</a>.
+        
+                
+            </p>
+        </div>
+    </section>
+}
+@Html.ActionLink("发表帖子", "create", "poster");
+<br />
+<h3>我们给您推荐的最新内容</h3>
+
+<ol class="round">
+    @{
+        string[] liClass = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+        int index = 1;
+        foreach (var item in Model)
+        {
+        <li class="@liClass[index++]">
+            <h5>@item.Title</h5>
+            @Html.ActionLink("More", "details/" + item.Id, "catalog")
+            <br />
+            <br />
+            @{
+            List<jnu_actroom.Models.PosterModel> newPosts = new jnu_actroom.Models.PosterDBContext().Posters.Where(u => u.CatalogId.Equals(item.Id)).ToList();
+            foreach (var p in newPosts)
+            {
+                @Html.ActionLink(p.title, "details/" + p.Id, "poster");
+                @p.PostTime
+            }
+            }
+
+        </li>
+        }
+    }
+</ol>
+
+

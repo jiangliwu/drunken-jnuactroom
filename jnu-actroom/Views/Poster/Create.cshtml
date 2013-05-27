@@ -1,0 +1,117 @@
+﻿@model jnu_actroom.Models.PosterModel
+
+@{
+    if (ViewBag.isNewRecord)
+    {
+        ViewBag.Title = "发表主题";
+    }
+    else
+    {
+        ViewBag.Title = "修改主题";
+    }
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <hgroup class="title">
+        <h1>@ViewBag.Title.</h1>
+    </hgroup>
+    if (ViewBag.isNewRecord)
+    {
+    <aside>
+        <h3>提示信息</h3>
+
+        提醒:交流过程中禁止任何形式（包括截图以及签名档）出现
+        <ul>
+
+            <li>辱骂他人</li>
+            <li>人身攻击</li>
+            <li>发表他人信息</li>
+
+        </ul>
+        违反者无通知删帖，无故闹事者直接拉入黑名单！
+
+        <ul>
+            <li>@Html.ActionLink("网站主页", "Index", "Home")</li>
+            <li>@Html.ActionLink("关于网站", "About", "Home")</li>
+            <li>@Html.ActionLink("联系我们", "Contact", "Home")</li>
+
+        </ul>
+    </aside>
+    }
+    
+    <fieldset>
+        <legend>PosterModel</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.title)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.title)
+            @Html.ValidationMessageFor(model => model.title)
+        </div>
+         <br />
+        @{
+            List<jnu_actroom.Models.CatalogModel> catalogs= new jnu_actroom.Models.CatalogDBContext().Catalogs.ToList();
+            var ops = new List<SelectListItem>();
+            foreach(var m in catalogs)
+            {
+                ops.Add(new SelectListItem(){ Text = m.Title,Value = m.Id.ToString()});
+            }
+        }
+        <div>
+            <b>所属类别 </b><br />
+            @Html.DropDownListFor(model => model.CatalogId,ops)
+        </div>
+         <br />
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Text)
+        </div>
+        <div class="editor-field">
+            @Html.TextAreaFor(model => model.Text, new { name = "Text" })
+            @Html.ValidationMessageFor(model => model.Text)
+        </div>
+
+        @Html.Raw(ViewData["kindeditor"])
+
+        @if (ViewBag.isNewRecord)
+        {
+            <input type="submit" value="Create" />
+        }
+        else
+        {
+            <input type="submit" value="Save" />
+        }
+    </fieldset>
+}
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+
+
+@Scripts.Render("~/bundles/kindeditor")
+<script type="text/javascript">
+    var editor;
+    KindEditor.ready(function (K) {
+        editor = K.create('textarea[name="Text"]', {
+            height: 600,
+            allowFileManager: true,                                            //是否可以浏览上传文件
+            allowUpload: true,                                                     //是否可以上传
+            uploadJson: '../Content/kindeditor/asp.net/upload_json.ashx',
+            fileManagerJson: 'Content/kindeditor/asp.net/file_manager_json.ashx',
+        });
+    });
+</script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+}

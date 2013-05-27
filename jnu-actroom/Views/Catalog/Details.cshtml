@@ -1,0 +1,31 @@
+﻿@model jnu_actroom.Models.CatalogModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>@Html.DisplayFor(model => model.Title)</h2>
+
+<fieldset>
+    <legend></legend>
+
+
+    <br />
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Description)<br />
+        <b>创建时间 </b>@Html.DisplayFor(model => model.CreateTime)
+    </div>
+    <br />
+    @{
+        
+        List<jnu_actroom.Models.PosterModel> allPosterByCatalogId = new jnu_actroom.Models.PosterDBContext().Posters.Where(u => u.CatalogId.Equals(Model.Id)).ToList();
+        foreach(var p in allPosterByCatalogId){
+            @(new jnu_actroom.Models.UsersContext().UserProfiles.Find(p.UserId).UserName);
+            @Html.ActionLink(p.title,"details/"+p.Id,"poster");
+        }
+    }
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

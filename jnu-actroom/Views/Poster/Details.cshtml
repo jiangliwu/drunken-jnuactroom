@@ -1,0 +1,110 @@
+﻿@model jnu_actroom.Models.PosterModel
+
+@using jnu_actroom.Models;
+@{
+    ViewBag.Title = "Details";
+}
+
+
+
+<fieldset>
+    <legend>PosterModel</legend>
+
+    <h2>
+        @Html.ActionLink(Model.title, "details/" + Model.Id, "poster")
+    </h2>
+    @if (User.Identity.IsAuthenticated)
+    {
+        if (Model.UserId == new UsersContext().UserProfiles.Single(u => u.UserName == User.Identity.Name).UserId)
+        {
+        @Html.ActionLink("编辑", "Edit", new { id = Model.Id })
+        }
+    }
+    <br />
+    <br />
+
+
+    <p>发表时间 : @Model.PostTime</p>
+
+    <p>修改时间 : @Model.ModifyTime</p>
+    <br />
+    <br />
+    <div class="display-field">
+        @Html.Raw(Model.Text)
+    </div>
+    <br />
+    <br />
+</fieldset>
+
+
+
+@{
+
+    var comments = new ReplyDBContext().Replys.Where(u => u.PoserId == Model.Id);
+    var users = new UsersContext().UserProfiles;
+    int floor = 1;
+    foreach (var comment in comments)
+    {
+        string nickName = "";
+        switch (floor)
+        {
+            case 1:
+                nickName = "沙发";
+                break;
+            case 2:
+                nickName = "板凳";
+                break;
+            case 3:
+                nickName = "板砖";
+                break;
+            default:
+                nickName = "第" + floor + "楼";
+                break;
+        }
+        floor++;
+        
+    <h5>@nickName  @users.Find(comment.UserId).UserName</h5>
+        Output.Write(comment.Text);
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<form action="~/poster/addComment/@Model.Id" method="post">
+    <textarea name="replyText" id="replyText"></textarea>
+    <input type="submit" value="发表意见" />
+</form>
+
+@Scripts.Render("~/bundles/kindeditor")
+<script type="text/javascript">
+    var editor;
+    KindEditor.ready(function (K) {
+        editor = K.create('textarea[name="replyText"]', {
+            height: 250,
+            allowFileManager: true,
+            allowUpload: true,
+            items: [
+            'code', 'source', '|', 'fontname', 'fontsize', '|', 'textcolor',
+            'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+            'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+            uploadJson: '../../Content/kindeditor/asp.net/upload_json.ashx',
+            fileManagerJson: '../../Content/kindeditor/asp.net/file_manager_json.ashx',
+        });
+    });
+</script>
+
+@Html.ActionLink("返回主页", "Index", "home")
+
+
