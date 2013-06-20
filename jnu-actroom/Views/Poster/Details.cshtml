@@ -6,81 +6,96 @@
 }
 
 
+<div class="row-fluid">
+    <div class="span10">
 
-<fieldset>
-    <legend>PosterModel</legend>
 
-    <h2>
-        @Html.ActionLink(Model.title, "details/" + Model.Id, "poster")
-    </h2>
-    @if (User.Identity.IsAuthenticated)
-    {
-        if (Model.UserId == new UsersContext().UserProfiles.Single(u => u.UserName == User.Identity.Name).UserId)
+        <h2>
+            @Html.ActionLink(Model.title, "details/" + Model.Id, "poster")
+        </h2>
+        @if (User.Identity.IsAuthenticated)
         {
-        @Html.ActionLink("编辑", "Edit", new { id = Model.Id })
+            if (Model.UserId == new UsersContext().UserProfiles.Single(u => u.UserName == User.Identity.Name).UserId)
+            {
+            @Html.ActionLink("编辑", "Edit", new { id = Model.Id })
+            }
         }
-    }
-    <br />
-    <br />
 
-
-    <p>发表时间 : @Model.PostTime</p>
-
-    <p>修改时间 : @Model.ModifyTime</p>
-    <br />
-    <br />
-    <div class="display-field">
-        @Html.Raw(Model.Text)
-    </div>
-    <br />
-    <br />
-</fieldset>
-
-
-
-@{
-
-    var comments = new ReplyDBContext().Replys.Where(u => u.PoserId == Model.Id);
-    var users = new UsersContext().UserProfiles;
-    int floor = 1;
-    foreach (var comment in comments)
-    {
-        string nickName = "";
-        switch (floor)
-        {
-            case 1:
-                nickName = "沙发";
-                break;
-            case 2:
-                nickName = "板凳";
-                break;
-            case 3:
-                nickName = "板砖";
-                break;
-            default:
-                nickName = "第" + floor + "楼";
-                break;
-        }
-        floor++;
+        <p><strong>发表时间 :</strong>  @Model.PostTime <strong>修改时间 :</strong> @Model.ModifyTime</p>
         
-    <h5>@nickName  @users.Find(comment.UserId).UserName</h5>
-        Output.Write(comment.Text);
+        <ul class="thumbnails">
+            <li class="span12">
 
-    }
-}
+                <div class="thumbnail">
+                    <div class="caption">
+
+                        <div class="display-field">
+                            @Html.Raw(Model.Text)
+                        </div>
+
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+       
+        @{
+            var comments = new ReplyDBContext().Replys.Where(u => u.PoserId == Model.Id);
+            var users = new UsersContext().UserProfiles;
+            int floor = 1;
+            foreach (var comment in comments)
+            {
+                string nickName = "";
+                switch (floor)
+                {
+                    case 1:
+                        nickName = "沙发";
+                        break;
+                    case 2:
+                        nickName = "板凳";
+                        break;
+                    case 3:
+                        nickName = "板砖";
+                        break;
+                    default:
+                        nickName = "第" + floor + "楼";
+                        break;
+                }
+                floor++;
+            <ul class="thumbnails">
+                <li class="span12">
+
+                    <div class="thumbnail">
+                        <div class="caption">
+                            <h5>@(floor-1) 楼 @nickName</h5>   <a href="#">@users.Find(comment.UserId).UserName</a>
+                            @{Output.Write(comment.Text);}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            }
+        }
+    </div>
+
+    <div class="span2">
+
+
+        <ul>
+            <li>@Html.ActionLink("返回主页", "Index", "home")</li>
+            <li>@Html.ActionLink("返回分类", "details/" + Model.CatalogId, "catalog")</li>
+        </ul>
+    </div>
+
+</div>
 
 
 
 
 
-
-
-
-
-
-
-
-
+ <div class="page-header">
+            <h3>回复主题</h3>
+        </div>
 
 <form action="~/poster/addComment/@Model.Id" method="post">
     <textarea name="replyText" id="replyText"></textarea>
@@ -105,6 +120,5 @@
     });
 </script>
 
-@Html.ActionLink("返回主页", "Index", "home")
 
 

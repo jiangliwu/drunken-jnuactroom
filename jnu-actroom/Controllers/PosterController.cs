@@ -16,13 +16,15 @@ namespace jnu_actroom.Controllers
         private PosterDBContext db = new PosterDBContext();
 
 
+
+        [ValidateInput(false)]
         public ActionResult addComment(int id = 0)
         {
 
             var replyContext = new ReplyDBContext();
             ReplyModel rModel = new ReplyModel();
             rModel.PoserId = id;
-            rModel.Text = Request["replyText"] as string;
+            rModel.Text = Request.Unvalidated["replyText"];
             rModel.UserId = new UsersContext().UserProfiles.Single(u=>u.UserName == User.Identity.Name).UserId;
             rModel.CreateTime = DateTime.Now;
             rModel.ModifyTime = DateTime.Now;
@@ -80,10 +82,12 @@ namespace jnu_actroom.Controllers
                 
 
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                //return RedirectToAction("Index");
+                return RedirectToAction("Details/"+postermodel.Id);
             }
 
-            return View(postermodel);
+            //return View(postermodel);
+            return RedirectToAction("Details/" + postermodel.Id);
         }
 
         //
@@ -130,6 +134,7 @@ namespace jnu_actroom.Controllers
             return View(postermodel);
         }
 
+        
         //
         // POST: /Poster/Delete/5
 
@@ -137,6 +142,7 @@ namespace jnu_actroom.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+  
             PosterModel postermodel = db.Posters.Find(id);
             db.Posters.Remove(postermodel);
             db.SaveChanges();

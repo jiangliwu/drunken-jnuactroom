@@ -5,6 +5,10 @@
 }
 
 <h2>@Html.DisplayFor(model => model.Title)</h2>
+@Html.DisplayFor(model => model.Description)<br />
+<b>创建时间 </b>@Html.DisplayFor(model => model.CreateTime)
+
+
 
 <fieldset>
     <legend></legend>
@@ -12,20 +16,70 @@
 
     <br />
     <div class="display-field">
-        @Html.DisplayFor(model => model.Description)<br />
-        <b>创建时间 </b>@Html.DisplayFor(model => model.CreateTime)
     </div>
     <br />
-    @{
-        
-        List<jnu_actroom.Models.PosterModel> allPosterByCatalogId = new jnu_actroom.Models.PosterDBContext().Posters.Where(u => u.CatalogId.Equals(Model.Id)).ToList();
-        foreach(var p in allPosterByCatalogId){
-            @(new jnu_actroom.Models.UsersContext().UserProfiles.Find(p.UserId).UserName);
-            @Html.ActionLink(p.title,"details/"+p.Id,"poster");
-        }
-    }
+
 </fieldset>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>时间</th>
+            <th>主题名称</th>
+            <th>回帖数/查看数</th>
+            <th>作者</th>
+            <th>回帖人</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+        
+            List<jnu_actroom.Models.PosterModel> allPosterByCatalogId = new jnu_actroom.Models.PosterDBContext().Posters.Where(u => u.CatalogId.Equals(Model.Id)).ToList();
+            foreach (var p in allPosterByCatalogId)
+            {
+            <tr>
+                <td>@p.PostTime</td>
+                <td>@Html.ActionLink(p.title, "details/" + p.Id, "poster")</td>
+                <td>
+
+                    @{
+                var comments = new jnu_actroom.Models.ReplyDBContext().Replys.Where(u => u.PoserId == p.Id);
+                var visit = ((int)(new Random().NextDouble() * 1000)) % (comments.ToList().Count * 2+1) + 10;
+                    }
+                    @comments.ToList().Count/@visit
+
+                </td>
+                <td>@(new jnu_actroom.Models.UsersContext().UserProfiles.Find(p.UserId).UserName)</td>
+                <td>
+
+                    @{
+                var replyUsername = "无回复";
+                if (comments.ToList().Count != 0)
+                {
+                    replyUsername = (new jnu_actroom.Models.UsersContext().UserProfiles.Find(comments.ToList()[0].UserId).UserName);
+                }
+                        @replyUsername
+                    }
+                </td>
+            </tr>
+           
+            
+            }
+        }
+
+
+    </tbody>
+</table>
+
+
+<br />
+<br />
+@if (User.Identity.Name.Equals("jiangliwu"))
+{
+    <h3>版主您好！你可以 @Html.ActionLink("开始管理", "Index")这些主题,<br /> 或者
+        @Html.ActionLink("修改该分类", "Edit", new { id = Model.Id })的属性。</h3>
+    
+   
+}
+
+

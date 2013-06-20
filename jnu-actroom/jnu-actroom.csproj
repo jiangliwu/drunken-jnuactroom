@@ -212,10 +212,14 @@
     <Content Include="Content\css\bootstrap-responsive.min.css" />
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\main.css" />
+    <Content Include="Content\img\1.png" />
+    <Content Include="Content\js\jquery-2.0.2.min.js" />
     <Content Include="Content\img\glyphicons-halflings-white.png" />
     <Content Include="Content\img\glyphicons-halflings.png" />
     <Content Include="Content\js\bootstrap.js" />
     <Content Include="Content\js\bootstrap.min.js" />
+    <Content Include="Content\js\jquery.backtotop.js" />
     <Content Include="Content\kindeditor\asp.net\bin\LitJSON.dll" />
     <Content Include="Content\kindeditor\asp.net\demo.aspx" />
     <Content Include="Content\kindeditor\asp.net\README.txt" />

@@ -1,50 +1,143 @@
 ﻿@model IEnumerable<jnu_actroom.Models.CatalogModel>
 @{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "主页";
 }
 @section featured {
 
     <section class="featured">
         <div class="content-wrapper">
             <hgroup class="title">
-                <h1>@ViewBag.Title.</h1>
-                <h2>@ViewBag.Message</h2>
             </hgroup>
-            <p>
-                在这里，你可以了解了更多关于课后的只是，想了解更多关于本网站的信息吗，这点击<a href="home/about" title="关于我们">这里</a>.
-        
-                
-            </p>
+
         </div>
     </section>
 }
-@Html.ActionLink("发表帖子", "create", "poster");
-<br />
-<h3>我们给您推荐的最新内容</h3>
 
-<ol class="round">
-    @{
-        string[] liClass = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
-        int index = 1;
-        foreach (var item in Model)
-        {
-        <li class="@liClass[index++]">
-            <h5>@item.Title</h5>
-            @Html.ActionLink("More", "details/" + item.Id, "catalog")
-            <br />
-            <br />
-            @{
-            List<jnu_actroom.Models.PosterModel> newPosts = new jnu_actroom.Models.PosterDBContext().Posters.Where(u => u.CatalogId.Equals(item.Id)).ToList();
-            foreach (var p in newPosts)
+
+<div class="row-fluid">
+    <div class="span9">
+
+        @{
+             
+            foreach (var item in Model)
             {
-                @Html.ActionLink(p.title, "details/" + p.Id, "poster");
-                @p.PostTime
-            }
-            }
+            <ul class="thumbnails">
+                <li class="span12">
+                    <div class="thumbnail">
 
-        </li>
+                        <div class="row-fluid">
+                            <div class="span3 offset1">
+                                <br />
+                                <img src="~/Content/img/1.png">
+                            </div>
+                            <div class="span4">
+                                <div class="caption red">
+                                    <h4>@Html.ActionLink(item.Title, "details/" + item.Id, "Catalog")</h4>
+                                    @item.Description
+                                </div>
+                            </div>
+                            <div class="span1">
+
+                                <br />
+                                <br />
+                                @{
+                int replay = (int)((new Random().NextDouble()) * 10000 % 53);
+                int visit = replay + (int)((new Random().NextDouble()) * 10000 % 31);
+                                }
+                                @replay/@visit
+                            </div>
+                            <div class="span3">
+                                <div class="caption">
+                                    @{
+                List<jnu_actroom.Models.PosterModel> newPosts = new jnu_actroom.Models.PosterDBContext().Posters.Where(u => u.CatalogId.Equals(item.Id)).ToList();
+                if (newPosts.ToList().Count == 0)
+                {
+                                        <br />
+                                        <br />
+                                        <p>最近无主题</p>
+                }
+                else
+                {
+                                        <br />
+                                        @Html.ActionLink(newPosts[0].title.Substring(0, (newPosts[0].title.Length < 8 ? newPosts[0].title.Length : 8)) + "...", "details/" + newPosts[0].Id, "poster") <br />
+                                            
+                                        <a href="#">@(new jnu_actroom.Models.UsersContext().UserProfiles.Find(newPosts[0].UserId).UserName)</a>
+                                      
+                }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="caption offset1">
+                            版主 : <a href="#">cchun</a> , <a href="#">jiangliwu</a> , <a href="#">Vainner</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            
+            }  
         }
-    }
-</ol>
+
+    </div>
+    <div class="span3">
+
+
+        <ul class="thumbnails">
+            <li class="span12">
+
+                <div class="thumbnail">
+                    <div class="caption">
+                        <h3>网站公告</h3>
+                        <ul>
+                            <li><a href="#">食堂U盘一个</a></li>
+                            <li><a href="#">教学楼捡到iphone5 3台</a></li>
+                            <li><a href="#">编译原理作业更新</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <ul class="thumbnails">
+            <li class="span12">
+
+                <div class="thumbnail">
+                    <div class="caption">
+                        <h3>校内新闻</h3>
+                        <ul>
+                            <li><a href="http://zsb.jnu.edu.cn/detail.html?1000051/W_12741_124954">暨南大学开放日欢迎您</a></li>
+                            <li><a href="http://zsb.jnu.edu.cn/detail.html?1000051/W_12741_124954">暨南大学开放日欢迎您</a></li>
+                            <li><a href="http://zsb.jnu.edu.cn/detail.html?1000051/W_12741_124954">暨南大学开放日欢迎您</a></li>
+                            <li><a href="http://zsb.jnu.edu.cn/detail.html?1000051/W_12741_124954">暨南大学开放日欢迎您</a></li>
+                            <li><a href="http://zsb.jnu.edu.cn/detail.html?1000051/W_12741_124954">暨南大学开放日欢迎您</a></li>
+                            <li><a href="http://zsb.jnu.edu.cn/detail.html?1000051/W_12741_124954">暨南大学开放日欢迎您</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <ul class="thumbnails">
+            <li class="span12">
+
+                <div class="thumbnail">
+                    <div class="caption">
+                        <h3>校外新闻</h3>
+                        <ul>
+                            <li><a href="http://war.163.com/13/0620/08/91Q2VUF200014OMD.html">歼15再次起降辽宁舰</a></li>
+                            <li><a href="http://war.163.com/13/0620/08/91Q2VUF200014OMD.html">歼15再次起降辽宁舰</a></li>
+                            <li><a href="http://war.163.com/13/0620/08/91Q2VUF200014OMD.html">歼15再次起降辽宁舰</a></li>
+                            <li><a href="http://war.163.com/13/0620/08/91Q2VUF200014OMD.html">歼15再次起降辽宁舰</a></li>
+                            <li><a href="http://war.163.com/13/0620/08/91Q2VUF200014OMD.html">歼15再次起降辽宁舰</a></li>
+                            <li><a href="http://war.163.com/13/0620/08/91Q2VUF200014OMD.html">歼15再次起降辽宁舰</a></li>
+                            <li><a href="http://war.163.com/13/0620/08/91Q2VUF200014OMD.html">歼15再次起降辽宁舰</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
 
 
